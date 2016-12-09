@@ -1,12 +1,15 @@
 package models;
 
 import com.google.common.collect.Maps;
+import com.thinkaurelius.titan.graphdb.relations.RelationIdentifier;
+
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Created by imriqwe on 26/08/2016.
  */
-public class MizoEdge {
+public class MizoEdge implements Serializable {
     private final String label;
     private final long relationId;
     private final MizoVertex vertex;
@@ -60,5 +63,16 @@ public class MizoEdge {
         }
 
         return properties;
+    }
+
+    /**
+     * Creates a Titan Edge Id of this edge
+     */
+    public String titanId() {
+        return RelationIdentifier.get(new long[]{
+                relationId,
+                isOutEdge ? vertex.id() : otherVertexId,
+                typeId,
+                isOutEdge ? otherVertexId : vertex.id()}).toString();
     }
 }

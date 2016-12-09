@@ -36,6 +36,14 @@ public class MizoVertex {
         return inEdges;
     }
 
+    public List<MizoEdge> initializedOutEdges() {
+        if (outEdges == null) {
+            outEdges = Lists.newArrayList();
+        }
+
+        return outEdges;
+    }
+
     public long id() {
         return id;
     }
@@ -53,13 +61,6 @@ public class MizoVertex {
     }
 
 
-    public List<MizoEdge> initializedOutEdges() {
-        if (outEdges == null) {
-            outEdges = Lists.newArrayList();
-        }
-
-        return outEdges;
-    }
 
 
 }
