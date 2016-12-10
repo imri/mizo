@@ -9,7 +9,6 @@ import com.thinkaurelius.titan.graphdb.idmanagement.IDManager;
 import com.thinkaurelius.titan.graphdb.internal.InternalRelationType;
 import com.thinkaurelius.titan.graphdb.types.system.BaseKey;
 import com.thinkaurelius.titan.graphdb.types.system.BaseLabel;
-import com.thinkaurelius.titan.hadoop.formats.util.input.SystemTypeInspector;
 import com.thinkaurelius.titan.util.stats.NumberUtil;
 import hbase.patches.MizoReadArrayBuffer;
 import hbase.patches.MizoStringSerializer;
@@ -18,7 +17,7 @@ import org.apache.hadoop.hbase.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by imrihecht on 12/9/16.
@@ -92,41 +91,12 @@ public class MizoTitanHBaseRelationParser implements IMizoRelationParser {
     private final static StringSerializer STRING_SERIALIZER = new StringSerializer();
 
     /**
-     * Internal object for checking whether types are system-related
-     */
-    private final static SystemTypeInspector TYPES_INSPECTOR = new SystemTypeInspector() {
-        @Override
-        public boolean isSystemType(long typeId) {
-            return IDManager.isSystemRelationTypeId(typeId);
-        }
-
-        @Override
-        public boolean isVertexExistsSystemType(long typeId) {
-            return typeId == BaseKey.VertexExists.longId();
-        }
-
-        @Override
-        public boolean isVertexLabelSystemType(long typeId) {
-            return typeId == BaseLabel.VertexLabelEdge.longId();
-        }
-
-        @Override
-        public boolean isTypeSystemType(long typeId) {
-            return typeId == BaseKey.SchemaCategory.longId() ||
-                    typeId == BaseKey.SchemaDefinitionProperty.longId() ||
-                    typeId == BaseKey.SchemaDefinitionDesc.longId() ||
-                    typeId == BaseKey.SchemaName.longId() ||
-                    typeId == BaseLabel.SchemaDefinitionEdge.longId();
-        }
-    };
-
-    /**
      * Mapping between relation type IDs and relation names
      * If a property - its name, if an edge - its label
      */
-    private final HashMap<Long, InternalRelationType> relationTypes;
+    private final Map<Long, InternalRelationType> relationTypes;
 
-    public MizoTitanHBaseRelationParser(HashMap<Long, InternalRelationType> relationTypes, Cell cell) {
+    public MizoTitanHBaseRelationParser(Map<Long, InternalRelationType> relationTypes, Cell cell) {
         this.relationTypes = relationTypes;
         this.valueArray = cell.getValueArray();
         this.valueOffset = cell.getValueOffset();
@@ -277,10 +247,14 @@ public class MizoTitanHBaseRelationParser implements IMizoRelationParser {
     @Override
 
     public boolean isSystemType() {
-        return TYPES_INSPECTOR.isVertexLabelSystemType(typeId) || // we do not use vertex labels - can skip them
-                TYPES_INSPECTOR.isSystemType(typeId) ||
-                TYPES_INSPECTOR.isVertexExistsSystemType(typeId) ||
-                TYPES_INSPECTOR.isTypeSystemType(typeId);
+        return IDManager.isSystemRelationTypeId(typeId) ||
+                typeId == BaseKey.VertexExists.longId() ||
+                typeId == BaseLabel.VertexLabelEdge.longId() ||
+                typeId == BaseKey.SchemaCategory.longId() ||
+                typeId == BaseKey.SchemaDefinitionProperty.longId() ||
+                typeId == BaseKey.SchemaDefinitionDesc.longId() ||
+                typeId == BaseKey.SchemaName.longId() ||
+                typeId == BaseLabel.SchemaDefinitionEdge.longId();
     }
 
     /**
