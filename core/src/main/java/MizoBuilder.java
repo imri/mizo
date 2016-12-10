@@ -1,12 +1,19 @@
 import input.IMizoRDDConfig;
+import input.IMizoRelationParser;
+import input.MizoEdgesIterator;
+import input.MizoVerticesIterator;
 import models.MizoEdge;
 import models.MizoVertex;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.reflect.ClassManifestFactory;
+
+import java.util.Iterator;
 
 /**
  * Created by imrihecht on 12/9/16.
@@ -39,6 +46,25 @@ public class MizoBuilder implements IMizoRDDConfig {
     public MizoBuilder() {
 
     }
+
+    public MizoRDD<MizoEdge> edgesRDD(SparkContext sc) {
+        return new MizoRDD<MizoEdge>(sc, this, ClassManifestFactory.classType(MizoEdge.class)) {
+            @Override
+            public scala.collection.Iterator<MizoEdge> createRegionIterator(Iterator<IMizoRelationParser> relationsIterator) {
+                return new MizoEdgesIterator(relationsIterator, this.config);
+            }
+        };
+    }
+
+    public MizoRDD<MizoVertex> verticesRDD(SparkContext sc) {
+        return new MizoRDD<MizoVertex>(sc, this, ClassManifestFactory.classType(MizoVertex.class)) {
+            @Override
+            public scala.collection.Iterator<MizoVertex> createRegionIterator(Iterator<IMizoRelationParser> relationsIterator) {
+                return new MizoVerticesIterator(relationsIterator, this.config);
+            }
+        };
+    }
+
 
     /*
      * Setters
