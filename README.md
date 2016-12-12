@@ -26,8 +26,8 @@ You can run Mizo on a working HBase cluster. The problem here is that HBase perf
 Mizo supports different levels of customization -- by default, it'll parse every vertex and edge. More accurately, due to Titan's internal data structure, which keeps each edge twice - one time on the 'in' vertex and another time on the 'out' vertex, Mizo will return each edge twice (on time when parsing the HBase region containing the 'in' vertex, and another time while parsing the 'out' vertex). You can prevent this by customizing Mizo to parse only in/out edges.
 
 Mizo exposes two types of RDDs:
-  - MizoVerticesRDD is an RDD of vertices, with their in and/or out edges and their properties. It is much more heavy in terms of memory, because each vertex returned also contains a collection of edges.
-  - MizoEdgesRDD is an RDD of edges, with the vertex it originated from. An edge is much more lighter in terms of memory usage - each edge contains a vertex inside, but that vertex does not contain a list of vertices (more accurately, the list is always null), so there are no heavy lists to keep in memory.
+  - `MizoVerticesRDD` is an RDD of vertices, with their in and/or out edges and their properties. It is much more heavy in terms of memory, because each vertex returned also contains a collection of edges.
+  - `MizoEdgesRDD` is an RDD of edges, with the vertex it originated from. An edge is much more lighter in terms of memory usage - each edge contains a vertex inside, but that vertex does not contain a list of vertices (more accurately, the list is always null), so there are no heavy lists to keep in memory.
 
 ### Getting started
 
