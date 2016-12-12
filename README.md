@@ -3,7 +3,7 @@
 
 Mizo enables you to perform Spark transformations and actions over a Titan DB, under the following circumstances:
   - It runs with an HBase backend
-  - Its HBase internal files (.hfile files) are accessible via the network
+  - Its HBase internal data files (HFiles) are accessible via the network
 
 Mizo was originally developed due to a lack of an efficient and quick OLAP engine on top of Titan.
 OLAP over Titan was meant to be solved by libraries such as Faunus and Tinkerpop's SparkGraphComputer, but neither of the solutions can be used in production - the former is buggy and misses data, and the latter is generally a non-efficient mechanism that spills lots of data.
