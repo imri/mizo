@@ -12,7 +12,7 @@ Moreover, both of the solutions rely on HBase API to retrieve the Graph data in 
 ### In production
 
 Mizo was tested in production on a Titan Graph with a about ten billion vertices and hundreds of billions of edges.
-Using a Spark cluster with total of 100 cores, it takes about 8 hours for Mizo to iterate over a graph with 2000 HBase regions.
+Using a Spark cluster with total of 100 cores and 150 GB of RAM (each Spark worker gets 1 core and 1.5 GB of RAM) it takes about 8 hours for Mizo to iterate over a graph with 2000 HBase regions.
 
 ### Limitations
 
