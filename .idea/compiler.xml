@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="mizo-core" />
+        <module name="mizo-hbase" />
+        <module name="mizo-iterators" />
+        <module name="mizo-rdd" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mizo" target="1.8" />
+      <module name="mizo-core" target="1.8" />
+      <module name="mizo-hbase" target="1.8" />
+      <module name="mizo-iterators" target="1.8" />
+      <module name="mizo-rdd" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
