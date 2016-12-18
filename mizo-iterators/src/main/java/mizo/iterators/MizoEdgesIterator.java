@@ -65,6 +65,9 @@ public class MizoEdgesIterator extends MizoBaseRelationsIterator<MizoEdge> {
 
     @Override
     public MizoEdge next() {
-        return edgeToReturn;
+        MizoEdge toReturn = edgeToReturn;
+        edgeToReturn = null;
+
+        return toReturn;
     }
 }
