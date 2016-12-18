@@ -1,4 +1,4 @@
-package mizo.rdd;
+package mizo.core;
 
 import com.google.common.base.Predicate;
 import com.thinkaurelius.titan.core.*;
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by imrihecht on 12/10/16.
  */
-public class MizoTitanRelationType implements Serializable, InternalRelationType {
+public class MizoTitanRelationType implements Serializable, InternalRelationType, PropertyKey {
 
     private final SchemaStatus status;
     private final long[] sortKey;
@@ -37,6 +37,8 @@ public class MizoTitanRelationType implements Serializable, InternalRelationType
     private final Integer ttl;
     private final boolean isPropertyKey;
     private final boolean isEdgeLabel;
+    private final Class<?> dataType;
+    private final Cardinality cardinality;
 
     public MizoTitanRelationType(InternalRelationType relationType) {
         status = relationType.getStatus();
@@ -51,6 +53,14 @@ public class MizoTitanRelationType implements Serializable, InternalRelationType
         ttl = relationType.getTTL();
         isPropertyKey = relationType.isPropertyKey();
         isEdgeLabel = relationType.isEdgeLabel();
+
+        if (relationType instanceof PropertyKey) {
+            dataType = ((PropertyKey)relationType).dataType();
+            cardinality = ((PropertyKey)relationType).cardinality();
+        } else {
+            dataType = null;
+            cardinality = null;
+        }
     }
 
     @Override
@@ -266,5 +276,14 @@ public class MizoTitanRelationType implements Serializable, InternalRelationType
     @Override
     public boolean isRemoved() {
         return false;
+    }
+
+    public Class<?> dataType() {
+        return dataType;
+    }
+
+    @Override
+    public Cardinality cardinality() {
+        return cardinality;
     }
 }

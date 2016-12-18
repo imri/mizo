@@ -15,7 +15,7 @@ public class MizoEdge implements Serializable {
     private final MizoVertex vertex;
     private final boolean isOutEdge;
     private final long otherVertexId;
-    private Map<String, String> properties;
+    private Map<String, Object> properties;
     private final long typeId;
 
     public MizoEdge(String label, long typeId, long relationId, boolean isOutEdge,
@@ -53,11 +53,11 @@ public class MizoEdge implements Serializable {
         return otherVertexId;
     }
 
-    public Map<String, String> properties() {
+    public Map<String, Object> properties() {
         return properties;
     }
 
-    public Map<String, String> initializedProperties() {
+    public Map<String, Object> initializedProperties() {
         if (properties == null) {
             properties = Maps.newHashMap();
         }
