@@ -7,12 +7,15 @@ import com.google.common.collect.Maps;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.thinkaurelius.titan.core.attribute.Contain;
+import com.thinkaurelius.titan.diskstorage.BackendException;
+import com.thinkaurelius.titan.graphdb.database.StandardTitanGraph;
 import com.thinkaurelius.titan.graphdb.internal.InternalRelationType;
 import com.thinkaurelius.titan.graphdb.internal.TitanSchemaCategory;
 import com.thinkaurelius.titan.graphdb.transaction.StandardTitanTx;
 import com.thinkaurelius.titan.graphdb.types.system.BaseKey;
 import mizo.core.IMizoRDDConfig;
 import mizo.core.IMizoRelationParser;
+import mizo.core.MizoTitanRelationType;
 import mizo.hbase.MizoRegionFamilyCellsIterator;
 import mizo.hbase.MizoTitanHBaseRelationParser;
 import org.apache.hadoop.conf.Configuration;
@@ -49,7 +52,7 @@ public abstract class MizoRDD<TReturn> extends RDD<TReturn> implements Serializa
     /**
      * Mapping between relation-type-id to relation-type objects
      */
-    protected Map<Long, InternalRelationType> relationTypes;
+    protected Map<Long, MizoTitanRelationType> relationTypes;
 
     /**
      * Config and tuning object for Mizo
@@ -134,18 +137,27 @@ public abstract class MizoRDD<TReturn> extends RDD<TReturn> implements Serializa
      * @param titanConfigPath Path to Titan's config path
      * @return Mapping between relation type-ids to InternalRelationType instances
      */
-    protected static HashMap<Long, InternalRelationType> loadRelationTypes(String titanConfigPath) {
+    protected static HashMap<Long, MizoTitanRelationType> loadRelationTypes(String titanConfigPath) {
         TitanGraph g = TitanFactory.open(titanConfigPath);
-        StandardTitanTx tx = (StandardTitanTx)g.newTransaction();
+        StandardTitanTx tx = (StandardTitanTx)g.buildTransaction().readOnly().start();
 
-        HashMap<Long, InternalRelationType> relations = Maps.newHashMap();
+        HashMap<Long, MizoTitanRelationType> relations = Maps.newHashMap();
 
         tx.query()
                 .has(BaseKey.SchemaCategory, Contain.IN, Lists.newArrayList(TitanSchemaCategory.values()))
                 .vertices()
-                .forEach(v -> relations.put(v.longId(), new MizoTitanRelationType((InternalRelationType)v)));
+                .forEach(v -> {
+                    if (v instanceof InternalRelationType)
+                        relations.put(v.longId(), new MizoTitanRelationType((InternalRelationType)v));
+                });
 
-        g.close();
+        tx.close();
+
+        try {
+            ((StandardTitanGraph)g).getBackend().close();
+        } catch (BackendException e) {
+            e.printStackTrace();
+        }
 
         return relations;
     }

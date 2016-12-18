@@ -95,7 +95,7 @@ public abstract class MizoBaseRelationsIterator<TReturn> extends AbstractIterato
             if (edgePropertyName != null && shouldParseEdgeProperty(edgeToUpdate, edgePropertyName)) {
                 edgeToUpdate.initializedProperties().put(edgePropertyName, relation.readPropertyValue());
             } else {
-                relation.skipPropertyValue();
+                relation.readPropertyValue();
             }
         }
     }

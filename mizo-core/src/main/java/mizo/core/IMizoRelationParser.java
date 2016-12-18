@@ -14,9 +14,7 @@ public interface IMizoRelationParser {
 
     long getOtherVertexId();
 
-    String readPropertyValue();
-
-    void skipPropertyValue();
+    Object readPropertyValue();
 
     String readPropertyName();
 
