@@ -29,11 +29,21 @@ Mizo exposes two types of RDDs:
   - `MizoVerticesRDD` is an RDD of vertices, with their in and/or out edges and their properties. It is much more heavy in terms of memory, because each vertex returned also contains a collection of edges.
   - `MizoEdgesRDD` is an RDD of edges, with the vertex it originated from. An edge is much more lighter in terms of memory usage - each edge contains a vertex inside, but that vertex does not contain a list of vertices (more accurately, the list is always null), so there are no heavy lists to keep in memory.
 
-### Getting started
+
+### Build
+
+Use Maven in order to build Mizo:
+
+```bash
+cd mizo/
+mvn -DskipTests=true package
+```
+
+### Getting Started
 
 Using Mizo for counting edges on graph:
 
-```
+```java
 import mizo.rdd.MizoBuilder;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
@@ -72,7 +82,7 @@ public class MizoEdgesCounter {
 
 Using Mizo for counting vertices on graph:
 
-```
+```java
 import mizo.rdd.MizoBuilder;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
