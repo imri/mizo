@@ -6,7 +6,6 @@ import com.thinkaurelius.titan.core.VertexLabel;
 import com.thinkaurelius.titan.diskstorage.Entry;
 import com.thinkaurelius.titan.diskstorage.ReadBuffer;
 import com.thinkaurelius.titan.diskstorage.util.StaticArrayBuffer;
-import com.thinkaurelius.titan.diskstorage.util.StaticArrayEntry;
 import com.thinkaurelius.titan.graphdb.database.EdgeSerializer;
 import com.thinkaurelius.titan.graphdb.database.idhandling.IDHandler;
 import com.thinkaurelius.titan.graphdb.database.serialize.StandardSerializer;
@@ -18,7 +17,7 @@ import com.thinkaurelius.titan.graphdb.types.system.BaseLabel;
 import com.thinkaurelius.titan.util.stats.NumberUtil;
 import mizo.core.IMizoRelationParser;
 import mizo.core.MizoTitanRelationType;
-import mizo.hbase.patches.MizoReadArrayBuffer;
+import mizo.hbase.patches.MizoTitanEntry;
 import org.apache.hadoop.hbase.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,8 +134,9 @@ public class MizoTitanHBaseRelationParser implements IMizoRelationParser {
     }
 
     private Entry createEntry(Cell cell) {
-        return StaticArrayEntry.of(new MizoReadArrayBuffer(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierOffset() + cell.getQualifierLength()),
-                new MizoReadArrayBuffer(cell.getValueArray(), cell.getValueOffset(), cell.getValueOffset() + cell.getValueLength()));
+        return new MizoTitanEntry(cell.getQualifierArray(),
+                cell.getQualifierOffset(), cell.getQualifierOffset() + cell.getQualifierLength(),
+                cell.getValueOffset(), cell.getValueOffset() + cell.getValueLength());
     }
 
     /**
